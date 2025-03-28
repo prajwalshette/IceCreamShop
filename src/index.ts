@@ -19,5 +19,7 @@ app.listen(port, () => {
   console.log(`Server prajwal is running on http://localhost:${port}`);
 });
 
+console.log("121")
+
 // A Step-by-Step Guide to Setting Up a Node.js Project with TypeScript
 // https://medium.com/@induwara99/a-step-by-step-guide-to-setting-up-a-node-js-project-with-typescript-6df4481cb335
