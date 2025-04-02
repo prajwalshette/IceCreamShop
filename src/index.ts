@@ -1,25 +1,17 @@
 // Import the 'express' module
 import express from 'express';
+import { PORT } from './config';
 
 // Create an Express application
 const app = express();
 
-// Set the port number for the server
-const port = 3003;
-
 // Define a route for the root path ('/')
 app.get('/', (req, res) => {
   // Send a response to the client
-  res.send('Hello');
+  res.send('Hello ====> Hi ');
 });
 
 // Start the server and listen on the specified port
-app.listen(port, () => {
-  // Log a message when the server is successfully running
-  console.log(`Server prajwal is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server prajwal is running on http://localhost:${PORT}`);
 });
-
-console.log("121")
-
-// A Step-by-Step Guide to Setting Up a Node.js Project with TypeScript
-// https://medium.com/@induwara99/a-step-by-step-guide-to-setting-up-a-node-js-project-with-typescript-6df4481cb335
