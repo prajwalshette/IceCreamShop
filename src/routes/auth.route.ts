@@ -1,5 +1,4 @@
 import { AuthController } from '../controllers/auth.controller';
-import { LoginDto, SignUpDto } from '../dtos/auth.dto';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { ValidationMiddleware } from '../middlewares/validation.middleware';
 import { Routes } from '../interfaces/routes.interface';
