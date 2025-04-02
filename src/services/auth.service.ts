@@ -1,11 +1,11 @@
-import { DataStoredInToken, TokenData } from '@/interfaces/auth.interface';
-import { IUser , IUserLogin} from '@/interfaces/auth.interface';
-import { SECRET_KEY } from '@config';
-import { HttpException } from '@exceptions/HttpException';
+import { DataStoredInToken, TokenData } from '..//interfaces/auth.interface';
+import { IUser , IUserLogin} from '../interfaces/auth.interface';
+import { SECRET_KEY } from '../config';
+import { HttpException } from '../exceptions/HttpException';
 import { sign } from 'jsonwebtoken';
 import { Service } from 'typedi';
 import { randomInt } from 'crypto';
-import prisma from '@/database';
+import prisma from '../database';
 
 export const createToken = (userId: string): TokenData => {
   const dataStoredInToken: DataStoredInToken = { userId };
@@ -28,7 +28,7 @@ export class AuthService {
     return createUserData;
   }
 
-  public async login(userData: IUser): Promise<{findUser: IUserLogin; tokenData: any }> {
+  public async login(userData: IUser): Promise<{user: IUserLogin; tokenData: any }> {
   	const findUser = await this.prisma.user.findUnique({ where: { email: userData.email }});
   	if (!findUser) throw new HttpException(409, `User (${userData.email}) not found`);
 
@@ -39,7 +39,7 @@ export class AuthService {
 
     const tokenData = createToken(findUser.id);
 
-  	return { findUser, tokenData };
+  	return { user: findUser, tokenData };
   }
 
 }

@@ -1,7 +1,7 @@
 
 // import { RequestWithUser } from '@/interfaces/auth.interface';
-import { IUser } from '@/interfaces/auth.interface';
-import { AuthService } from '@/services/auth.service';
+import { IUser } from '../interfaces/auth.interface';
+import { AuthService } from '../services/auth.service';
 import { NextFunction, Request, Response } from 'express';
  
 
@@ -22,7 +22,7 @@ export class AuthController {
     public login = async (request: Request, response: Response, next: NextFunction) => {
         try {
           const loginData: IUser = request.body;
-          const loginUserData = await this.authService.signup(loginData);
+          const loginUserData = await this.authService.login(loginData);
     
           response.status(200).json({ data: loginUserData, message: 'login Sucessfully' });
         } catch (error) {

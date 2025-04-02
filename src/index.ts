@@ -1,17 +1,13 @@
-// Import the 'express' module
-import express from 'express';
-import { PORT } from './config';
+import { App } from './app';
+import { ValidateEnv } from './utils/validateEnv';
+import { AuthRoute } from './routes/auth.route';
+import { IndexRoute } from './routes/index.route';
 
-// Create an Express application
-const app = express();
+ValidateEnv();
 
-// Define a route for the root path ('/')
-app.get('/', (req, res) => {
-  // Send a response to the client
-  res.send('Hello ====> Hi ');
-});
+const app = new App([
+	new IndexRoute(),
+	new AuthRoute(),
+]);
 
-// Start the server and listen on the specified port
-app.listen(PORT, () => {
-  console.log(`Server prajwal is running on http://localhost:${PORT}`);
-});
+app.listen();

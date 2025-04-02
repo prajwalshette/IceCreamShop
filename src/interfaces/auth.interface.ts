@@ -25,3 +25,18 @@ export interface TokenData {
 	token: string;
 	expiresIn: number;
 }
+
+export interface RequestWithUser extends Request {
+	user: {
+		userDocument: IUserDocument;
+	};
+}
+
+export interface IUserDocument {
+    id: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    isDeleted: boolean;
+    isBlocked: boolean;
+}
