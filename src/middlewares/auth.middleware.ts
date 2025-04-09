@@ -1,7 +1,7 @@
-import { DataStoredInToken, IUserLogin, RequestWithUser } from '@/interfaces/auth.interface';
+import { DataStoredInToken, RequestWithUser } from '../interfaces/auth.interface';
 import { IUserDocument, IUser } from '../interfaces/auth.interface';
 import { SECRET_KEY } from '../config';
-import { HttpException } from '@exceptions/HttpException';
+import { HttpException } from '../exceptions/HttpException';
 import { NextFunction, Response, Request } from 'express';
 import { verify } from 'jsonwebtoken';
 import prisma from '../database';
