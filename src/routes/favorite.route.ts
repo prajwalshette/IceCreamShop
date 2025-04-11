@@ -2,6 +2,7 @@ import { FavoriteController } from '../controllers/favorite.controller';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import { Routes } from '../interfaces/routes.interface';
 import { Router } from 'express';
+import asyncHandler from '../utils/asyncHandler';
 
 export class FavoriteRoute implements Routes {
     public path = '/favorite';
@@ -13,7 +14,7 @@ export class FavoriteRoute implements Routes {
     }
 
     private initializeRoutes() {
-        this.router.post(`${this.path}/add-or-remove`, AuthMiddleware, this.favoriteController.addAndRemoveFavorite);
-        this.router.get(`${this.path}`, AuthMiddleware, this.favoriteController.getUserFavorites);
+        this.router.post(`${this.path}/add-or-remove`, asyncHandler(AuthMiddleware), asyncHandler(this.favoriteController.addAndRemoveFavorite));
+        this.router.get(`${this.path}`, asyncHandler(AuthMiddleware), asyncHandler(this.favoriteController.getUserFavorites));
     }
 }

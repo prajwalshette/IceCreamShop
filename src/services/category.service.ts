@@ -9,7 +9,7 @@ import { Category } from '../interfaces/category.interface';
 export class CategoryService {
   private prisma = prisma;
 
-public async createCategory(categoryData: Category): Promise<Category> {
+public createCategory = async (categoryData: Category): Promise<Category> => {
     const findCategory = await this.prisma.category.findUnique({ where: { name:  categoryData.name } });
     if (findCategory) throw new HttpException(409, `Category (${categoryData.name}) already exists`);
 

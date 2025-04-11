@@ -5,6 +5,7 @@ import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
+import cron from 'node-cron';
 
 import {
   BASE_PATH,
@@ -12,7 +13,7 @@ import {
   NODE_ENV,
   PORT,
 } from './config';
-import { Routes } from '@interfaces/routes.interface';
+import { Routes } from './interfaces/routes.interface';
 import { ErrorMiddleware } from './middlewares/error.middleware';
 import { logger, stream } from './utils/logger';
 
@@ -20,6 +21,13 @@ export class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
+
+  private crownScheduler() {
+	cron.schedule('*/5 * * * *', () => {
+		console.log(`Cron job running at: ${new Date().toLocaleString()}`);
+		logger.info(`🚀 App listening on the port ${PORT}`);
+	});
+}
 
   constructor(routes: Routes[]) {
 		this.app = express();
@@ -29,6 +37,7 @@ export class App {
 		this.initializeMiddlewares();
 		this.initializeRoutes(routes);
 		this.initializeErrorHandling();
+		this.crownScheduler();
 	}
 
   public listen() {
