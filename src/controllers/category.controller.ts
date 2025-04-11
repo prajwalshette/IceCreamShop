@@ -40,13 +40,32 @@ export class CategoryController {
     public updateCategory = async (request: RequestWithUser, response: Response, next: NextFunction) => {
         try {
             const categoryData: Category = request.body;
-            const updateCategoryData = await this.cateroryService.updateCategory(categoryData);
-      
+            const image = request.file;
+            let imageUrl: string | undefined;
+
+            if(image){
+              imageUrl = await uploadCategoryImage(image as unknown as FileWithBuffer);
+              if (!imageUrl) {
+                  throw new Error('Image upload failed');
+              }
+            }
+    
+            const updateCategoryData = await this.cateroryService.updateCategory({...categoryData, imageUrl: imageUrl ? imageUrl : categoryData.imageUrl});
+
             response.status(201).json({ data: updateCategoryData, message: 'Category Update Sucessfully' });
         } catch (error) {
           next(error);
         }
   };
+
+  public getAllCategories = async (request: RequestWithUser, response: Response, next: NextFunction) => {
+    try {
+      const categoryData = await this.cateroryService.getAllCategories();
+      response.status(200).json({ data: categoryData, message: 'Get All Category Sucessfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
 
 }
 

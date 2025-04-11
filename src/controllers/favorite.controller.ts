@@ -10,8 +10,9 @@ export class FavoriteController {
 
     public addAndRemoveFavorite = async (request: RequestWithUser, response: Response, next: NextFunction) => {
         try {
+        const userId = request.user.userDocument.id;
         const favoriteData: IFavorite = request.body as unknown as IFavorite;
-        const {data, message} = await this.favoriteService.addAndRemoveFavorite(favoriteData);
+        const {data, message} = await this.favoriteService.addAndRemoveFavorite({...favoriteData, userId});
 
         response.status(201).json({ data: data, message: message });
         } catch (error) {

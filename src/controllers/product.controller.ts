@@ -3,6 +3,16 @@ import { NextFunction, Request, Response } from 'express';
 import { IProduct } from '../interfaces/product.interface';
 import { RequestWithUser } from '../interfaces/auth.interface';
 import { HttpException } from '../exceptions/HttpException';
+import { uploadProductImages } from '../services/firebase.service';
+
+interface FileWithBuffer extends Express.Multer.File {
+    buffer: Buffer;
+    originalname: string;
+    fieldname: string;
+    encoding: string;
+    mimetype: string;
+    size: number;
+  }
 
 export class ProductController {
 
@@ -10,10 +20,19 @@ export class ProductController {
      
     public createProduct = async (request: RequestWithUser, response: Response, next: NextFunction) => {
         try {
-        const productData: IProduct = request.body;
-        const createProductData = await this.productService.createProduct(productData);
-    
-        response.status(201).json({ data: createProductData, message: 'Product Create Sucessfully' });
+            const productData: IProduct = request.body;
+            const image = request.file;
+            if (!image) {
+                throw new Error('No images provided');
+            }
+            const imageUrl = await uploadProductImages(image as unknown as FileWithBuffer);
+
+            if (!imageUrl) {
+                throw new Error('Image upload failed');
+            }
+            const createProductData = await this.productService.createProduct({...productData, imageUrl});
+        
+            response.status(201).json({ data: createProductData, message: 'Product Create Sucessfully' });
         } catch (error) {
         next(error);
         }

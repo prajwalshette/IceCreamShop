@@ -38,4 +38,10 @@ public async updateCategory(categoryData: Category): Promise<Category> {
     return updateCategoryData;
 }
 
+public async getAllCategories(): Promise<Category[]> {
+    const categories: Category[] = await this.prisma.category.findMany({ where: { isDeleted: false } });
+    if (!categories) throw new HttpException(404, `Categories Not Found`);
+    return categories;
+}
+
 }

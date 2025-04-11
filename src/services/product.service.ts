@@ -14,11 +14,13 @@ export class ProductService {
       const findProduct = await this.prisma.category.findUnique({ where: { name:  productData.name } });
       if (findProduct) throw new HttpException(409, `Product (${productData.name}) already exists`);
 
+      const price = parseFloat(productData.price as unknown as string);
+
       const createProductData: IProduct = await prisma.product.create({ 
           data: {
             name: productData.name,
             description: productData.description,
-            price: productData.price as number,
+            price: price,
             imageUrl: productData.imageUrl,
             isAvailable: productData.isAvailable,
             categoryId: productData.categoryId,
@@ -35,12 +37,14 @@ public async updateProduct(productData: IProduct): Promise<IProduct> {
     const findProduct = await this.prisma.category.findUnique({ where: { id:  productData.id } });
     if (!findProduct) throw new HttpException(404, `Product (${productData.id}) Not Found`);
 
+    const price = parseFloat(productData.price as unknown as string);
+
     const updateProductData: IProduct = await prisma.product.update({ 
         where: { id: productData.id},
         data: {
           name: productData.name,
           description: productData.description,
-          price: productData.price as number,
+          price: price,
           imageUrl: productData.imageUrl,
           isAvailable: productData.isAvailable,
           categoryId: productData.categoryId,

@@ -50,6 +50,7 @@ model Product {
   isDeleted   Boolean   @default(false)
   created_at  DateTime  @default(now())
   updated_at  DateTime? @updatedAt
+  popular     Boolean?  @default(false)
   
   // Relations
   category    Category  @relation(fields: [categoryId], references: [id])

@@ -18,6 +18,7 @@ export class CategoryRoute implements Routes {
 
     private initializeRoutes() {
         this.router.post(`${this.path}/create`, upload.single('image'), asyncHandler(AuthMiddleware), asyncHandler(this.categoryController.createCategory));
-        this.router.put(`${this.path}/update`, asyncHandler(AuthMiddleware), asyncHandler(this.categoryController.updateCategory));
+        this.router.put(`${this.path}/update`, upload.single('image'), asyncHandler(AuthMiddleware), asyncHandler(this.categoryController.updateCategory));
+        this.router.get(`${this.path}/get-all`, asyncHandler(AuthMiddleware), asyncHandler(this.categoryController.getAllCategories));
     }
 }

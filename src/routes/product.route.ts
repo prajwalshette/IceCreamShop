@@ -3,6 +3,9 @@ import { Routes } from '../interfaces/routes.interface';
 import { Router } from 'express';
 import { AuthMiddleware } from '../middlewares/auth.middleware';
 import asyncHandler from '../utils/asyncHandler';
+import multer from 'multer';
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 export class ProductRoute implements Routes {
 	public path = '/product';
@@ -14,8 +17,8 @@ export class ProductRoute implements Routes {
 	}
 
 	private initializeRoutes() {
-		this.router.post(`${this.path}/create`, asyncHandler(AuthMiddleware), asyncHandler(this.productController.createProduct));
-		this.router.put(`${this.path}/update`, asyncHandler(AuthMiddleware), asyncHandler(this.productController.updateProduct));
+		this.router.post(`${this.path}/create`, upload.single('image'), asyncHandler(AuthMiddleware), asyncHandler(this.productController.createProduct));
+		this.router.put(`${this.path}/update`, upload.single('image'), asyncHandler(AuthMiddleware), asyncHandler(this.productController.updateProduct));
 		this.router.get(`${this.path}/all`, asyncHandler(AuthMiddleware), asyncHandler(this.productController.getAllProducts));
 		this.router.get(`${this.path}`, asyncHandler(AuthMiddleware), asyncHandler(this.productController.getProductById));
 		this.router.get(`${this.path}/category`, asyncHandler(AuthMiddleware), asyncHandler(this.productController.getProductsByCategory));

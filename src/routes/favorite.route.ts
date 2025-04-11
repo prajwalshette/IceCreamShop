@@ -15,6 +15,6 @@ export class FavoriteRoute implements Routes {
 
     private initializeRoutes() {
         this.router.post(`${this.path}/add-or-remove`, asyncHandler(AuthMiddleware), asyncHandler(this.favoriteController.addAndRemoveFavorite));
-        this.router.get(`${this.path}`, asyncHandler(AuthMiddleware), asyncHandler(this.favoriteController.getUserFavorites));
+        this.router.get(`${this.path}/user-product`, asyncHandler(AuthMiddleware), asyncHandler(this.favoriteController.getUserFavorites));
     }
 }
