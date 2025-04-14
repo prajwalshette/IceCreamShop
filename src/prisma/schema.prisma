@@ -32,6 +32,7 @@ model User {
   addresses   Address[]
   favorites   Favorite[]
   role        Role      @default(CUSTOMER)
+  cart        Cart?
 }
 
 enum Role {
@@ -50,7 +51,8 @@ model Product {
   isDeleted   Boolean   @default(false)
   created_at  DateTime  @default(now())
   updated_at  DateTime? @updatedAt
-  popular     Boolean?  @default(false)
+  isPopular   Boolean?  @default(false)
+
   
   // Relations
   category    Category  @relation(fields: [categoryId], references: [id])
@@ -58,6 +60,7 @@ model Product {
   orderItems  OrderItem[]
   reviews     Review[]
   favorites   Favorite[]
+  cartItems   CartItem[]
 }
 
 model Category {
@@ -198,4 +201,31 @@ model Promotion {
   isDeleted   Boolean   @default(false)
   created_at  DateTime  @default(now())
   updated_at  DateTime? @updatedAt
+}
+
+model Cart {
+  id          String    @id @default(uuid())
+  isDeleted   Boolean   @default(false)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @unique
+  cartItems   CartItem[]
+}
+
+model CartItem {
+  id          String    @id @default(uuid())
+  quantity    Int
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+  
+  // Relations
+  cart        Cart      @relation(fields: [cartId], references: [id])
+  cartId      String
+  product     Product   @relation(fields: [productId], references: [id])
+  productId   String
+
+  @@unique([cartId, productId])
 }

@@ -1,3 +1,4 @@
+export type Role = "ADMIN" | "STAFF" | "CUSTOMER"
 import { Request } from 'express';
 export interface IUser {
   id: string;
@@ -40,4 +41,5 @@ export interface IUserDocument {
     phoneNumber: string;
     isDeleted: boolean;
     isBlocked: boolean;
+    // role: Role;
 }
