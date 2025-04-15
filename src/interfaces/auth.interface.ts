@@ -43,3 +43,14 @@ export interface IUserDocument {
     isBlocked: boolean;
     // role: Role;
 }
+
+export interface IAddress {
+  id: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  isDefault: boolean;
+  isDeleted: boolean;
+  userId: string;
+}
