@@ -107,6 +107,8 @@ enum PaymentStatus {
   UNPAID
   PAID
   REFUNDED
+  PENDING
+  FAILED
 }
 
 enum PaymentMethod {

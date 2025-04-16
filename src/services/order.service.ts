@@ -13,14 +13,13 @@ export class OrderService {
   
   constructor() {
     this.razorpay = new Razorpay({
-      key_id: RAZORPAY_KEY_ID || '',
-      key_secret: RAZORPAY_KEY_SECRET || '',
+      key_id: RAZORPAY_KEY_ID,
+      key_secret: RAZORPAY_KEY_SECRET,
     });
   }
 
   public async createOrder(orderData: IOrder): Promise<{ data: any; message: string }> {
     try {
-      // Validate address
       const address = await this.prisma.address.findFirst({
         where: { id: orderData.addressId, userId: orderData.userId, isDeleted: false },
       });
@@ -29,7 +28,6 @@ export class OrderService {
         throw new HttpException(404, 'Address not found');
       }
 
-      // Create order with order items
       const order = await this.prisma.order.create({
         data: {
           totalAmount: orderData.totalAmount,
@@ -57,7 +55,6 @@ export class OrderService {
         },
       });
 
-      // Clear the user's cart after successful order creation
       const cart = await this.prisma.cart.findUnique({
         where: { userId: orderData.userId },
       });
@@ -121,6 +118,7 @@ export class OrderService {
               amount: true,
               status: true,
               method: true,
+              razorpayOrderId: true,
             },
           },
         },
@@ -161,7 +159,6 @@ export class OrderService {
 
   public async initiatePayment(paymentData: IPayment): Promise<{ data: any; message: string }> {
     try {
-      // Check if order exists
       const order = await this.prisma.order.findUnique({
         where: { id: paymentData.orderId, isDeleted: false },
       });
@@ -170,7 +167,6 @@ export class OrderService {
         throw new HttpException(404, 'Order not found');
       }
 
-      // Check if payment already exists
       const existingPayment = await this.prisma.payment.findFirst({
         where: { orderId: paymentData.orderId, status: PaymentStatus.PAID },
       });
@@ -183,7 +179,7 @@ export class OrderService {
       const razorpayOrder = await this.razorpay.orders.create({
         amount: Math.round(paymentData.amount * 100),
         currency: paymentData.currency || 'INR',
-        receipt: `receipt_order_${paymentData.orderId}`,
+        receipt: `rcpt_${paymentData.orderId.slice(0, 30)}`,
         payment_capture: true,
       });
 
@@ -223,9 +219,9 @@ export class OrderService {
 
   public async verifyPayment(paymentId: string, orderId: string, razorpayPaymentId: string, razorpayOrderId: string, razorpaySignature: string): Promise<{ data: any; message: string }> {
     try {
-      // Verify Razorpay signature
+
       const generatedSignature = crypto
-        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || '')
+        .createHmac('sha256', RAZORPAY_KEY_SECRET || '')
         .update(`${razorpayOrderId}|${razorpayPaymentId}`)
         .digest('hex');
 
@@ -254,13 +250,28 @@ export class OrderService {
 
       return { data: payment, message: 'Payment verified successfully' };
     } catch (error) {
+      await this.prisma.payment.update({
+        where: { id: paymentId },
+        data: {
+          razorpayPaymentId,
+          razorpaySignature,
+          status: PaymentStatus.FAILED,
+        },
+      });
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: {
+          paymentStatus: PaymentStatus.FAILED,
+          status: OrderStatus.PROCESSING,
+        },
+      });
+
       throw error;
     }
   }
 
   public async cashOnDelivery(orderId: string): Promise<{ data: any; message: string }> {
     try {
-      // Check if order exists
       const order = await this.prisma.order.findUnique({
         where: { id: orderId, isDeleted: false },
       });
@@ -272,14 +283,13 @@ export class OrderService {
       if (order.paymentMethod !== PaymentMethod.CASH) {
         throw new HttpException(400, 'Payment method is not cash on delivery');
       }
-
-      // Create payment record
+      
       const payment = await this.prisma.payment.create({
         data: {
           orderId,
           amount: order.totalAmount,
           method: PaymentMethod.CASH,
-          status: PaymentStatus.UNPAID, // Will be marked as paid upon delivery
+          status: PaymentStatus.UNPAID,
         },
       });
 
@@ -295,5 +305,23 @@ export class OrderService {
     } catch (error) {
       throw error;
     }
+  };
+
+  public async testRazorpayCredentials(): Promise<any> {
+    try {
+      const order = await this.razorpay.orders.create({
+        amount: 500, // ₹5 in paise
+        currency: 'INR',
+        receipt: `test_receipt_${Date.now()}`,
+        payment_capture: true,
+      });
+  
+      console.log("✅ Razorpay test order created successfully:", order);
+      return order;
+    } catch (error) {
+      console.error("❌ Razorpay API key is invalid or order creation failed:", error);
+      throw error;
+    }
   }
+  
 }

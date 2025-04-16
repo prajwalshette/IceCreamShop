@@ -7,6 +7,8 @@ import { ReviewRoute } from './routes/review.route';
 import { ProductRoute } from './routes/product.route';
 import { CategoryRoute } from './routes/category.route';
 import { CartRoute } from './routes/cart.route';
+import { OrderRoute } from './routes/order.route';
+import { CheckoutRoute } from './routes/checkout.route';
 
 ValidateEnv();
 
@@ -18,6 +20,8 @@ const app = new App([
 	new ProductRoute(),
 	new CategoryRoute(),
 	new CartRoute(),
+	new OrderRoute(),
+	// new CheckoutRoute(),
 ]);
 
 app.listen();

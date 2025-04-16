@@ -101,4 +101,15 @@ export class OrderController {
       next(error);
     }
   };
+
+  public testRazorpayCredentials = async (request: RequestWithUser, response: Response, next: NextFunction) => {
+    try {
+
+      const response = await this.orderService.testRazorpayCredentials();
+      
+      response.status(200).json({ data: response });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

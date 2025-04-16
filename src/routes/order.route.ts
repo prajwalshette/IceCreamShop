@@ -8,7 +8,7 @@ import { AuthMiddleware } from '../middlewares/auth.middleware';
 import asyncHandler from '../utils/asyncHandler';
 
 export class OrderRoute {
-  public path = '/orders';
+  public path = '/order';
   public router = Router();
   public orderController = new OrderController();
 //   public authMiddleware = new AuthMiddleware();
@@ -27,5 +27,8 @@ export class OrderRoute {
     this.router.post(`${this.path}/payment/initiate`, asyncHandler(AuthMiddleware), asyncHandler(this.orderController.initiatePayment));
     this.router.post(`${this.path}/payment/verify`, asyncHandler(AuthMiddleware), this.orderController.verifyPayment);
     this.router.post(`${this.path}/payment/cash-on-delivery`, asyncHandler(AuthMiddleware), asyncHandler(this.orderController.cashOnDelivery));
+    this.router.post(`${this.path}/test`, asyncHandler(AuthMiddleware), asyncHandler(this.orderController.testRazorpayCredentials));
+ 
+
 }
 }
