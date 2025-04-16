@@ -4,9 +4,7 @@ import { SECRET_KEY } from '../config';
 import { HttpException } from '../exceptions/HttpException';
 import { sign } from 'jsonwebtoken';
 import { Service } from 'typedi';
-import { randomInt } from 'crypto';
 import prisma from '../database';
-import { promises } from 'dns';
 
 export const createToken = (userId: string): TokenData => {
   const dataStoredInToken: DataStoredInToken = { userId };

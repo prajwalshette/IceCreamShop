@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
 import { HttpException } from '../exceptions/HttpException';
 import { ICartItem } from '../interfaces/cart.interface';
+import prisma from '../database';
 
 export class CartService {
-  private prisma = new PrismaClient();
+  private prisma = prisma;
 
   public async addToCart(userId: string, cartItemData: ICartItem): Promise<{ data: any; message: string }> {
     try {

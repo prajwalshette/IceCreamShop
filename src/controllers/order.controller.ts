@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { OrderService } from '../services/order.service';
 import { IOrder, IPayment } from '../interfaces/order.interface';
 import { RequestWithUser } from '../interfaces/auth.interface';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '@/enums';
 
 export class OrderController {
   private orderService = new OrderService();

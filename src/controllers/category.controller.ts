@@ -1,7 +1,7 @@
 
 import { RequestWithUser } from '../interfaces/auth.interface';
 import { CategoryService } from '../services/category.service';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { Category } from '../interfaces/category.interface';
 import { uploadCategoryImage } from '../services/firebase.service';
 
