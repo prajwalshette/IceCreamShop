@@ -15,7 +15,7 @@ export class ProductService {
 
       const price = parseFloat(productData.price as unknown as string);
 
-      const createProductData: IProduct = await prisma.product.create({ 
+      const createProductData: IProduct = await this.prisma.product.create({ 
           data: {
             name: productData.name,
             description: productData.description,
@@ -38,7 +38,7 @@ public async updateProduct(productData: IProduct): Promise<IProduct> {
 
     const price = parseFloat(productData.price as unknown as string);
 
-    const updateProductData: IProduct = await prisma.product.update({ 
+    const updateProductData: IProduct = await this.prisma.product.update({ 
         where: { id: productData.id},
         data: {
           name: productData.name,
@@ -90,7 +90,7 @@ public async deleteProduct(productId: string): Promise<IProduct> {
     const product = await this.prisma.product.findUnique({ where: { id: productId } });
     if (!product) throw new HttpException(404, `Product (${productId}) Not Found`);
 
-    const deleteProductData: IProduct = await prisma.product.update({ 
+    const deleteProductData: IProduct = await this.prisma.product.update({ 
         where: { id: productId },
         data: {
           isDeleted: true,

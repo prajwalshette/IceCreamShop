@@ -13,7 +13,7 @@ export class ReviewService {
 
   public async createReview(reviewData: ReviewCreate): Promise<Review> {
     try {
-      const createReviewData: Review = await prisma.review.create({
+      const createReviewData: Review = await this.prisma.review.create({
         data: {
           rating: reviewData.rating,
           comment: reviewData.comment,
@@ -35,7 +35,7 @@ export class ReviewService {
         if (!findReview)
             throw new HttpException(404, `Review (${reviewData.id}) Not Found`);
     
-        const updateReviewData: Review = await prisma.review.update({
+        const updateReviewData: Review = await this.prisma.review.update({
             where: { id: reviewData.id },
             data: {
             rating: reviewData.rating,
@@ -67,7 +67,7 @@ export class ReviewService {
             if (!findReview)
                 throw new HttpException(404, `Review (${reviewId}) Not Found`);
 
-            const deleteReviewData: Review = await prisma.review.update({
+            const deleteReviewData: Review = await this.prisma.review.update({
                 where: { id: reviewId },
                 data: {
                     isDeleted: true,
