@@ -23,7 +23,7 @@ export class AuthService {
     const findUser = await this.prisma.user.findUnique({ where: { email: signUpData.email } });
     if (findUser) throw new HttpException(409, `Email (${signUpData.email}) already exists`);
 
-    const createUserData: IUser = await prisma.user.create({ data: signUpData });
+    const createUserData: IUser = await this.prisma.user.create({ data: signUpData });
     return createUserData;
   }
 
@@ -45,7 +45,7 @@ export class AuthService {
     const findUser = await this.prisma.user.findUnique({ where: { email: userData.email } });
     if (!findUser) throw new HttpException(404, `Email (${userData.email}) not found`);
 
-    const updateUserData: IUser = await prisma.user.update({
+    const updateUserData: IUser = await this.prisma.user.update({
       where: { email: userData.email},
       data: {
         name: userData.name,
@@ -56,21 +56,41 @@ export class AuthService {
   }
 
   public async createAdress(addressData: IAddress): Promise<IAddress> {
-    const createAddressData: IAddress = await prisma.address.create({
+    const createAddressData: IAddress = await this.prisma.address.create({
       data: {
         street: addressData.street,
         city: addressData.city,
         state: addressData.state,
         zipCode: addressData.zipCode,
         userId: addressData.userId,
+      },
+      select: {
+        id: true,
+        street: true,
+        city: true,
+        state: true,
+        zipCode: true,
+        isDefault: true,
+        isDeleted: true,
+        userId: true,
       }
      });
     return createAddressData;
   }
 
   public async getUserAdress(userId : string): Promise<IAddress[]> {
-    const addressData: IAddress[] = await prisma.address.findMany({
-       where: { userId: userId }
+    const addressData: IAddress[] = await this.prisma.address.findMany({
+       where: { userId: userId },
+       select: {
+        id: true,
+        street: true,
+        city: true,
+        state: true,
+        zipCode: true,
+        isDefault: true,
+        isDeleted: true,
+        userId: true,
+      }
      });
     return addressData;
   }

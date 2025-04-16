@@ -8,7 +8,7 @@ export class CartService {
   public async addToCart(userId: string, cartItemData: ICartItem): Promise<{ data: any; message: string }> {
     try {
       // Check if product exists
-      const product = await this.prisma.product.findUnique({
+      const product: any = await this.prisma.product.findUnique({
         where: { id: cartItemData.productId, isDeleted: false, isAvailable: true },
       });
 
@@ -17,7 +17,7 @@ export class CartService {
       }
 
       // Check if user has a cart, create one if not
-      let cart = await this.prisma.cart.findUnique({
+      let cart: any = await this.prisma.cart.findUnique({
         where: { userId },
         include: { cartItems: true },
       });
@@ -39,18 +39,18 @@ export class CartService {
       }
 
       // Check if product already exists in cart
-      const existingCartItem = cart.cartItems.find(item => item.productId === cartItemData.productId);
+      const existingCartItem: any = cart.cartItems.find((item: { productId: string }) => item.productId === cartItemData.productId);
 
       if (existingCartItem) {
         // Update quantity if product already exists
-        const updatedCartItem = await this.prisma.cartItem.update({
+        const updatedCartItem: any = await this.prisma.cartItem.update({
           where: { id: existingCartItem.id },
           data: { quantity: existingCartItem.quantity + cartItemData.quantity },
         });
         return { data: updatedCartItem, message: 'Cart item quantity updated' };
       } else {
         // Add new product to cart
-        const newCartItem = await this.prisma.cartItem.create({
+        const newCartItem: any = await this.prisma.cartItem.create({
           data: {
             cartId: cart.id,
             productId: cartItemData.productId,
@@ -66,7 +66,7 @@ export class CartService {
 
   public async getCart(userId: string): Promise<{ data: any; message: string }> {
     try {
-      const cart = await this.prisma.cart.findUnique({
+      const cart: any = await this.prisma.cart.findUnique({
         where: { userId },
         include: {
           cartItems: {
@@ -98,7 +98,7 @@ export class CartService {
   public async updateCartItem(userId: string, cartItemId: string, quantity: number): Promise<{ data: any; message: string }> {
     try {
       // Check if cart exists
-      const cart = await this.prisma.cart.findUnique({
+      const cart: any = await this.prisma.cart.findUnique({
         where: { userId },
         include: { cartItems: true },
       });
@@ -107,21 +107,19 @@ export class CartService {
         throw new HttpException(404, 'Cart not found');
       }
 
-      // Check if cart item exists and belongs to user's cart
-      const cartItem = cart.cartItems.find(item => item.id === cartItemId);
+      const cartItem: any = cart.cartItems.find((item: { id: string }) => item.id === cartItemId);
       if (!cartItem) {
         throw new HttpException(404, 'Cart item not found');
       }
 
       if (quantity <= 0) {
-        // Remove item if quantity is 0 or negative
         await this.prisma.cartItem.delete({
           where: { id: cartItemId },
         });
         return { data: null, message: 'Cart item removed' };
       } else {
         // Update quantity
-        const updatedCartItem = await this.prisma.cartItem.update({
+        const updatedCartItem: any = await this.prisma.cartItem.update({
           where: { id: cartItemId },
           data: { quantity },
         });
@@ -135,7 +133,7 @@ export class CartService {
   public async removeFromCart(userId: string, cartItemId: string): Promise<{ data: any; message: string }> {
     try {
       // Check if cart exists
-      const cart = await this.prisma.cart.findUnique({
+      const cart: any = await this.prisma.cart.findUnique({
         where: { userId },
         include: { cartItems: true },
       });
@@ -145,7 +143,7 @@ export class CartService {
       }
 
       // Check if cart item exists and belongs to user's cart
-      const cartItem = cart.cartItems.find(item => item.id === cartItemId);
+      const cartItem: any = cart.cartItems.find((item: { id: string }) => item.id === cartItemId);
       if (!cartItem) {
         throw new HttpException(404, 'Cart item not found');
       }
@@ -164,7 +162,7 @@ export class CartService {
   public async clearCart(userId: string): Promise<{ data: any; message: string }> {
     try {
       // Check if cart exists
-      const cart = await this.prisma.cart.findUnique({
+      const cart: any = await this.prisma.cart.findUnique({
         where: { userId },
       });
 
