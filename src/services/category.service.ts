@@ -1,5 +1,4 @@
 import { HttpException } from '../exceptions/HttpException';
-import { sign } from 'jsonwebtoken';
 import { Service } from 'typedi';
 import prisma from '../database';
 import { Category } from '../interfaces/category.interface';

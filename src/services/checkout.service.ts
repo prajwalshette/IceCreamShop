@@ -1,9 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+
 import { HttpException } from '../exceptions/HttpException';
 import { IOrder } from '../interfaces/order.interface';
+import prisma from '../database';
 
 export class CheckoutService {
-  private prisma = new PrismaClient();
+  private prisma = prisma;
 
   public async checkout(userId: string, addressId: string, paymentMethod: string): Promise<{ data: any; message: string }> {
     try {

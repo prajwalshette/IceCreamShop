@@ -1,7 +1,6 @@
 import { FavoriteService } from '../services/favorite.service';
 import { NextFunction, Request, Response } from 'express';
 import { IFavorite } from '../interfaces/favorite.interface';
-import { isNull } from 'util';
 import { RequestWithUser } from '../interfaces/auth.interface';
 
 export class FavoriteController {

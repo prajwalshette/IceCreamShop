@@ -1,14 +1,14 @@
-import { PrismaClient, OrderStatus, PaymentStatus, PaymentMethod } from '@prisma/client';
 import { HttpException } from '../exceptions/HttpException';
 import { IOrder, IPayment } from '../interfaces/order.interface';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { Service } from 'typedi';
 import { RAZORPAY_KEY_SECRET, RAZORPAY_KEY_ID } from '../config/index'
-
+import prisma from '../database';
+import { OrderStatus, PaymentStatus, PaymentMethod, Role } from '../enums';
 @Service()
 export class OrderService {
-  private prisma = new PrismaClient();
+  private prisma = prisma;
   private razorpay: Razorpay;
   
   constructor() {
