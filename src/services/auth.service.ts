@@ -1,11 +1,12 @@
 import { DataStoredInToken, TokenData } from '..//interfaces/auth.interface';
-import { IUser , IUserLogin} from '../interfaces/auth.interface';
+import { IUser , IUserLogin, IAddress} from '../interfaces/auth.interface';
 import { SECRET_KEY } from '../config';
 import { HttpException } from '../exceptions/HttpException';
 import { sign } from 'jsonwebtoken';
 import { Service } from 'typedi';
 import { randomInt } from 'crypto';
 import prisma from '../database';
+import { promises } from 'dns';
 
 export const createToken = (userId: string): TokenData => {
   const dataStoredInToken: DataStoredInToken = { userId };
@@ -42,4 +43,38 @@ export class AuthService {
   	return { user: findUser, tokenData };
   }
 
-}
+  public async updateProfile(userData: IUser): Promise<IUser> {
+    const findUser = await this.prisma.user.findUnique({ where: { email: userData.email } });
+    if (!findUser) throw new HttpException(404, `Email (${userData.email}) not found`);
+
+    const updateUserData: IUser = await prisma.user.update({
+      where: { email: userData.email},
+      data: {
+        name: userData.name,
+        phoneNumber: userData.phoneNumber,
+      }
+     });
+    return updateUserData;
+  }
+
+  public async createAdress(addressData: IAddress): Promise<IAddress> {
+    const createAddressData: IAddress = await prisma.address.create({
+      data: {
+        street: addressData.street,
+        city: addressData.city,
+        state: addressData.state,
+        zipCode: addressData.zipCode,
+        userId: addressData.userId,
+      }
+     });
+    return createAddressData;
+  }
+
+  public async getUserAdress(userId : string): Promise<IAddress[]> {
+    const addressData: IAddress[] = await prisma.address.findMany({
+       where: { userId: userId }
+     });
+    return addressData;
+  }
+
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
