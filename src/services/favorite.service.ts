@@ -14,7 +14,7 @@ export class FavoriteService {
       const deleteFavorite = await this.prisma.favorite.delete({ where: { id: findFavorite.id } });
       return {data: deleteFavorite, message: 'Sucessfully Remove Your WishList'};
     }else{
-        const createFavoriteData: IFavorite = await prisma.favorite.create({ 
+        const createFavoriteData: IFavorite = await this.prisma.favorite.create({ 
             data: {
                 userId: favoriteData.userId,
                 productId: favoriteData.productId,

@@ -12,7 +12,7 @@ public createCategory = async (categoryData: Category): Promise<Category> => {
     const findCategory = await this.prisma.category.findUnique({ where: { name:  categoryData.name } });
     if (findCategory) throw new HttpException(409, `Category (${categoryData.name}) already exists`);
 
-    const createUserData: Category = await prisma.category.create({ 
+    const createUserData: Category = await this.prisma.category.create({ 
         data: {
             name: categoryData.name,
             description: categoryData.description,
