@@ -23,7 +23,7 @@ export class App {
   public port: string | number;
 
   private crownScheduler() {
-	cron.schedule('*/5 * * * *', () => {
+	cron.schedule('*/30 * * * * *', () => {
 		console.log(`Cron job running at: ${new Date().toLocaleString()}`);
 		logger.info(`🚀 App listening on the port ${PORT}`);
 	});
